@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form with ['bootstrap_4_layout.html.twig'] %}
+
+	{% block title %}Réservez l'annonce {{ad.title}}{% endblock %}
+
+
+{% block stylesheets %}
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+{% endblock %}
+
+		{% block body %}
+
+			<div class="container mt-4">
+
+
+				<h1>Réservez l'annonce {{ad.title}}</h1>
+
+				<p>Vous allez réserver l'annonce de {{ad.author.firstName}} {{ad.author.lastName}}</p>
+
+				{{ form_start(form) }}
+				<div class="row">
+					<div class="col">
+						{{form_row(form.startDate,{'label':'Date de début'})}}
+					</div>
+					<div class="col">
+						{{form_row(form.endDate,{'label':'Date de fin'})}}
+					</div>
+				</div>
+
+				<div class="row">
+					{{form_row(form.comment,{'label':'Votre commentaire','attr':{'cols':100}})}}
+				</div>
+
+				<h4>Montant du séjour <span id="amount"></span> €</h4>
+
+				<span id="days"></span> à {{ad.price}} € 
+					<br/><br/>
+				<button type="submit" class="btn btn-success">Faire la réservation</button>
+
+				{{ form_end(form) }}
+
+			</div>
+		{% endblock %}
+
+
+
+		{% block javascripts %}
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+		
+	<script type="text/javascript">
+	
+	$('#booking_startDate,#booking_endDate').datepicker({
+							format:'dd/mm/yyyy',
+							datesDisabled:[
+								{% for day in  notAvailableDays %}	
+									'{{day | date('d/m/Y') }}',
+									{% endfor %}
+							],
+							startDate:new Date()
+
+	});
+
+
+	$('#booking_startDate,#booking_endDate').on('change',calculateAmount);
+
+
+	function calculateAmount(){
+
+		const startDate = new Date($('#booking_startDate').val().replace(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/,'$3-$2-$1'));
+
+		const endDate = new Date($('#booking_endDate').val().replace(/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/,'$3-$2-$1'));
+
+//console.log(startDate);
+
+			if (startDate && endDate && startDate < endDate)
+				{
+
+					const DAY_TIME = 24 * 60 * 60 * 1000 // nbre de milliseconde dans une journée	
+
+					const interval = endDate.getTime()-startDate.getTime();
+					var days = interval / DAY_TIME;
+
+					const amount = days * {{ad.price}};
+
+					if (days > 1) {days = days + ' nuits';} else {days = days +' nuit'};
+					$("#days").text(days);
+					$("#amount").text(amount);
+
+
+
+				}
+		
+
+
+
+
+	}
+
+
+
+	</script>	
+
+
+
+
+		{% endblock %}

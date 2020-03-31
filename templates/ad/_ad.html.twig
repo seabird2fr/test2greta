@@ -1,0 +1,19 @@
+<div class="col-4 mt-3">
+
+	<div class="card text-center">
+		<div class="card-header">
+			{{ad.rooms}} pièces {{ad.price}}€/nuit<br/>
+			{% include 'partials/rating.html.twig' with {'rating':ad.getAvgRatings} %}	
+		</div>
+		<div class="card-body">
+
+			<img src="{{ad.coverImage}}" alt="" style="height: 200px;width: 100%;display: block">
+			<h5 class="card-title">{{ad.title}}</h5>
+			<p class="card-text">{{ad.introduction}}</p>
+			<a href="{{path('ads_show',{'slug':ad.slug})}}" class="btn btn-primary">Voir plus</a>
+			
+		</div>
+	</div>
+
+
+</div>

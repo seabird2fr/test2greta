@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des réservations {% endblock %}
+
+	{% block body %} 
+
+		<div class="container-fluid">
+			<h1>Gestions des réservations</h1>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">id</th>
+						<th scope="col">Annonce</th>
+						<th scope="col">Loueur</th>
+						<th scope="col">Date d'arrivée</th>
+						<th scope="col">Date de départ</th>
+						<th scope="col">Montant</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				{% for booking in bookings %}
+					<tr>
+						<th scope="row">{{booking.id}}</th>
+						<td>{{booking.ad.title}}</td>
+						<td>{{booking.booker.firstName}} {{booking.booker.lastName}} <img src="{{booking.booker.picture}}"></td>
+						<td>{{booking.startDate|date('d/m/Y')}}</td>
+						<td>{{booking.endDate|date('d/m/Y')}}</td>
+						<td>{{booking.amount}} €</td>
+						<td><a href="#" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+							<a href="#" onclick="return confirm('Etes-vous certain de vouloir supprimer l\'annonce ?')" class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
+					</tr>
+				{% endfor %}
+
+				</tbody>
+			</table>
+
+
+
+		</div>
+
+
+	{% endblock %}	

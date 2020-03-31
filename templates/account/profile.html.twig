@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme formUser with ['bootstrap_4_layout.html.twig'] %}
+
+{% block title %}Formulaire de modification de profil{% endblock %}
+
+	{% block body %}
+
+	<div class="container">
+		<h1>Modification du profil</h1>
+
+		{{form_start(formUser)}}
+			{{form_row(formUser.email,{'label':'Email','attr':{'placeholder':'Entrez votre email'}})}}
+			{{form_row(formUser.picture,{'label':'Image de profil','attr':{'placeholder':'Entrez votre image de profil'}})}}
+			{{form_row(formUser.introduction,{'label':'Introduction','attr':{'placeholder':'Entrez votre introduction'}})}}
+			{{form_row(formUser.description,{'label':'description','attr':{'placeholder':'Entrez votre description'}})}}
+
+		<button type="submit" class="btn btn-success">Modification</button>
+
+		{{form_end(formUser)}}
+
+	</div>
+
+
+
+	{% endblock %}

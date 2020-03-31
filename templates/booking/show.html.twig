@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Réservation N°: {{booking.id}}{% endblock %}
+
+	{% set difference = date(booking.endDate).diff(date(booking.startDate)) %}
+		{% set NumberDays = difference.days %}
+
+			{% block body %}
+
+				<div class="container mt-4">
+					
+					<h1>Réservation N°: {{booking.id}}</h1>
+					
+					{% if app.request.query.get('withAlert') %}
+						<div class="alert alert-success">
+							<h4>La réservation à bien été effectuée</h4>
+						</div>
+
+					{% endif %}	
+
+
+					<div class="row">
+						<div class="col">
+
+							<ul class="list-group">
+								<li class="list-group-item">Numéro: {{booking.id}}</li>
+								<li class="list-group-item">Date d'arrivée: {{booking.startDate|date("d/m/Y")}}</li>
+								<li class="list-group-item">Date de départ: {{booking.endDate|date("d/m/Y")}}</li>
+								<li class="list-group-item">Nombre de nuit: {{NumberDays}}</li>
+								<li class="list-group-item">Montant total: {{booking.amount}} €</li>
+								<li class="list-group-item">Commentaire: {{booking.comment}}</li>
+							</ul>
+
+							<h4 class="mt-4">Propriétaire</h4>
+							<div class="row">
+								<div class="col">
+									<img src="{{booking.ad.author.picture}}"/>
+								</div>
+
+								<div class="col">
+									<h4><a href="{{path('user_show',{'slug':booking.ad.author.slug})}}">{{booking.ad.author.firstName}} {{booking.ad.author.lastName}}</a></h4>
+									<span class="badge badge-primary">{{booking.ad.author.ads|length}} annonces</span>
+
+								</div>
+
+
+
+							</div>
+							<div>
+								{{booking.ad.author.description|raw}}
+							</div>
+
+
+
+						</div>
+
+						<div class="col">
+							
+							<h2>Votre Hébergement</h2>
+							<h4><a href="{{path('ads_show',{'slug':booking.ad.slug})}}">{{booking.ad.title}}</a></h4>
+							<img src="{{booking.ad.coverImage}}"/>
+							<br>
+							{{booking.ad.content|raw}}
+
+						</div>
+
+
+					</div>
+
+
+					<div class="row">
+						<div class="col">
+							<div class="alert alert-light">
+								<h2>Entrer votre avis</h2>
+
+								{% if date() > date(booking.endDate) %}
+									
+									{% if (booking.ad.getCommentFromAuthor(booking.booker) is null) %}
+										{{form_start(form)}}
+										{{form_row(form.rating,{'label':'Note sur 5'})}}
+
+										{{form_row(form.content,{'label':'votre commentaire'})}}
+										
+										<button type="submit" class="btn btn-success">Valider le commentaire</button>
+										{{form_end(form)}}
+									{% else %}
+
+										<p>Commentaire: {{booking.ad.getCommentFromAuthor(booking.booker).content}}</p>
+										<br>
+										Note: {% include 'partials/rating.html.twig' with {'rating':booking.ad.getCommentFromAuthor(booking.booker).rating} %}
+
+									{% endif %}
+									
+								{% else %}
+									<p>Commentez votre réservation à la fin de votre voyage</p>
+
+
+								{% endif %}
+								
+
+							</div>
+
+						</div>
+
+					</div>
+
+
+				{% endblock %}
+
+
+
+				{% block javascripts %}
+
+
+				{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'admin/base.html.twig' %}
+
+{% form_theme form with ['bootstrap_4_layout.html.twig', _self] %}
+
+	{% block title %}Modification d'une annonce{% endblock %}
+
+		{% block body %}
+
+			{% for image in ad.imageUploads %}
+
+				<img id="{{image.id}}" src="{{image.url}}" style="width:150px"/>
+			{% endfor %}
+
+			<div class="container-fluid mt-4">
+
+				<div class="row">
+
+					<div class="col">
+						<div class="card">
+							<div class="card-header">
+								<h1>Modification de l'annonce {{ad.title}}</h1>
+							</div>
+
+							<div class="card-body">
+								{{ form_start(form) }}
+
+								{{form_row(form.tableau_id)}}
+								{{ form_row(form.title,{'label':'Titre','attr':{'placeholder':"Titre de l'annonce"}}) }}
+
+
+
+								{{ form_row(form.introduction) }}
+
+								{{ form_row(form.content) }}
+
+								{{ form_row(form.coverImage) }}
+
+								{{ form_row(form.rooms,{'attr':{'min':1}}) }}
+
+
+								{{ form_row(form.price) }}
+
+								{# champ annonce_images qui sera sur-chargé #} 
+								{{ form_row(form.images) }} 
+
+
+								<div style="display:none" >
+									{{ form_row(form.file) }} 
+								</div>
+
+								<button type="submit" class="btn btn-primary">Modifier l'annonce</button>
+
+								{{ form_end(form) }}
+							</div>
+						</div>
+					</div>
+
+					<div class="col">
+
+						<div class="card">
+							<div class="card-header">
+								Les réservations
+							</div>
+							<div class="card-body">
+
+								<table class="table">
+									<thead>
+										<tr>
+											<th scope="col">id</th>
+											<th scope="col">Voyageur</th>
+											<th scope="col">Arrivée</th>
+											<th scope="col">Départ</th>
+											<th scope="col">Prix</th>
+											<th scope="col">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+
+									{% for booking in ad.bookings %}
+										<tr>
+											<th scope="row">{{booking.id}}</th>
+											<td>{{booking.booker.firstName}} {{booking.booker.lastName}}</td>
+											<td>{{booking.startDate|date('d/m/Y')}}</td>
+											<td>{{booking.endDate|date('d/m/Y')}}</td>
+											<td>{{booking.amount}} €</td>
+											<td><a href="#" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+										</tr>
+									{% endfor %}
+
+									</tbody>
+								</table>
+
+
+
+							</div>
+						</div>
+
+						<br><br>
+						<div class="card">
+							<div class="card-header">
+								Les commentaires
+							</div>
+							<div class="card-body">
+
+								<table class="table">
+									<thead>
+										<tr>
+											<th scope="col">id</th>
+											<th scope="col">Voyageur</th>
+											<th scope="col">Note</th>
+											<th scope="col">Commentaire</th>
+											<th scope="col">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+
+									{% for comment in ad.comments %}
+										<tr>
+											<th scope="row">{{comment.id}}</th>
+											<td>{{comment.author.firstName}} {{comment.author.lastName}}</td>
+											<td>{{comment.rating}}</td>
+											<td>{{comment.content}}</td>
+											<td><a href="#" class="btn btn-primary"><i class="fas fa-edit"></i></a> <a href="#" onclick="return confirm('Etes-vous certain de vouloir supprimer l\'annonce ?')" class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
+										</tr>
+									{% endfor %}
+
+									</tbody>
+								</table>
+
+
+
+							</div>
+						</div>
+
+
+
+					</div>
+
+
+				</div>
+			</div>
+		{% endblock %}
+
+
+
+		{% block _annonce_images_entry_row %} 
+			
+
+			<div class="row" id="{{ id }}"> 
+				<div class="col">
+					<img src="{{form.children.url.vars.value}}" >
+					{{ form_row(form.url, {'label':false,'attr':{'placeholder':"url de l'image"}}) }} 
+				</div> 
+				<div class="col"> 
+					{{ form_row(form.caption, {'label':false,'attr':{'placeholder':"description de l'image"}}) }} 
+				</div> 
+				<div class="col-2"> 
+					<button type="button"  class="btn btn-danger del_image" data-bloc="{{ id }}" >X</button> 
+				</div> 
+			</div> 
+			
+		{% endblock %} 
+
+
+		{% block javascripts %}
+
+			<script src="/js/ad.js"></script>
+			<script>
+
+			$("img").click(function(event){
+
+				$('#' + event.target.id).remove();
+
+
+				var precedent = $('#annonce_tableau_id').val();
+
+				$('#annonce_tableau_id').val(precedent + ',' + event.target.id);
+			//console.log(valeur);
+
+
+
+
+		})
+
+			</script>
+			{% endblock %}

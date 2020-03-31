@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form with ['bootstrap_4_layout.html.twig', _self] %}
+
+	{% block title %}Modification d'une annonce{% endblock %}
+
+		{% block body %}
+
+		{% for image in ad.imageUploads %}
+			
+			<img id="{{image.id}}" src="{{image.url}}" style="width:150px"/>
+		{% endfor %}
+
+			<div class="container mt-4">
+
+				<h1>Modification de l'annonce {{ad.title}}</h1>
+				{{ form_start(form) }}
+
+{{form_row(form.tableau_id)}}
+				{{ form_row(form.title,{'label':'Titre','attr':{'placeholder':"Titre de l'annonce"}}) }}
+
+
+
+				{{ form_row(form.introduction) }}
+
+				{{ form_row(form.content) }}
+
+				{{ form_row(form.coverImage) }}
+
+				{{ form_row(form.rooms,{'attr':{'min':1}}) }}
+
+
+				{{ form_row(form.price) }}
+
+				{# champ annonce_images qui sera sur-chargé #} 
+				{{ form_row(form.images) }} 
+				<button type="button" id="add_image" class="btn btn-success">Ajouter une image</button><br/><br/> 
+
+			{{ form_row(form.file) }} 
+			
+				<button type="submit" class="btn btn-primary">Modifier l'annonce</button>
+
+				{{ form_end(form) }}
+
+			</div>
+		{% endblock %}
+
+
+
+		{% block _annonce_images_entry_row %} 
+			
+			<div class="row" id="{{ id }}"> 
+				<div class="col"> 
+					{{ form_row(form.url, {'label':false,'attr':{'placeholder':"url de l'image"}}) }} 
+				</div> 
+				<div class="col"> 
+					{{ form_row(form.caption, {'label':false,'attr':{'placeholder':"description de l'image"}}) }} 
+				</div> 
+				<div class="col-2"> 
+					<button type="button"  class="btn btn-danger del_image" data-bloc="{{ id }}" >X</button> 
+				</div> 
+			</div> 
+			
+		{% endblock %} 
+
+
+		{% block javascripts %}
+
+			<script src="/js/ad.js"></script>
+<script>
+
+		$("img").click(function(event){
+
+			$('#' + event.target.id).remove();
+
+
+			var precedent = $('#annonce_tableau_id').val();
+
+			$('#annonce_tableau_id').val(precedent + ',' + event.target.id);
+			//console.log(valeur);
+
+
+
+
+	})
+
+</script>
+		{% endblock %}
